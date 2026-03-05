@@ -28,7 +28,7 @@ def ping():
     return {"status":"ok","message":"pong"}
 
 # Create: Add a new User.
-@app.post("/user",response_model=UserOut,status_code=status.HTTP_201_CREATED)
+@app.post("/users",response_model=UserOut,status_code=status.HTTP_201_CREATED)
 def create_user(payload:UserCreate,db:Session=Depends(get_db)):
     # check if emai of username already exists
     existing_user=db.query(User).filter(
@@ -48,12 +48,12 @@ def create_user(payload:UserCreate,db:Session=Depends(get_db)):
     return user
 
 # Read: Get all users
-@app.get('/user/{user_id}',response_model=list[UserOut])
+@app.get('/users',response_model=list[UserOut])
 def list_users(db:Session=Depends(get_db)):
     return db.query(User).order_by(User.id.asc()).all()
 
 # Read: Get single user by ID
-@app.get("/user/{user_id}",response_model=UserOut)
+@app.get("/users/{user_id}",response_model=UserOut)
 def get_user(user_id:int,db:Session=Depends(get_db)):
     user=db.get(User,user_id)
     if not user:
@@ -64,7 +64,7 @@ def get_user(user_id:int,db:Session=Depends(get_db)):
     return user
 
 # UPDATE: Modify existing user.
-@app.put("/user/{user_id}",response_model=UserOut)
+@app.put("/users/{user_id}",response_model=UserOut)
 def update_user(user_id:int,payload:UserUpdate,db:Session=Depends(get_db)):
     # Get existing user
     user=db.get(User,user_id)
@@ -92,10 +92,11 @@ def update_user(user_id:int,payload:UserUpdate,db:Session=Depends(get_db)):
                 status_code=400,
                 detail="Username already in use"
             )
+        user.username=payload.username
         
     db.add(user)
     db.commit()
-    db.refresh()
+    db.refresh(user)
     return user
 
 # DELETE : Remove a user
@@ -105,10 +106,9 @@ def delete_user(user_id:int,db:Session=Depends(get_db)):
     if not user:
         raise HTTPException(
             status_code=404,
-            detail="Uder not found"
+            detail="User not found"
         )
     
     db.delete(user)
     db.commit()
-
     return None # 204 responses have no body
