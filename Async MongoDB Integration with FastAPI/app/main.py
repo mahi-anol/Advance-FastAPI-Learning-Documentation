@@ -122,7 +122,7 @@ async def update_note(note_id: str,note_update:NoteUpdate):
 
     # Retrieve and return updated note
     updated_note=await db.notes.find_one({"_id":ObjectId(note_id)})
-    return note_helper(update_note)
+    return note_helper(updated_note)
 
 
 @app.delete("/notes/{note_id}",status_code=status.HTTP_204_NO_CONTENT)
