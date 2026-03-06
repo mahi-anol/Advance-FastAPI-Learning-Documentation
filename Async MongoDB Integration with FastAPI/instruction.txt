@@ -1,0 +1,71 @@
+# isntall
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+docker compose up -d
+
+docker compose ps or docker ps
+
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+
+http://localhost:8000/docs
+
+
+# test commands
+
+
+# Create a note (inside poridhi VM)
+curl -X POST http://localhost:8000/notes \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "My First Note",
+    "content": "This is stored in MongoDB",
+    "tags": ["test", "mongodb"]
+  }'
+
+# Create a note (inside your local machine using poridhi load balancer URL)
+curl -X POST http://localhost:8000/notes \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "My First Note",
+    "content": "This is stored in MongoDB",
+    "tags": ["test", "mongodb"]
+  }'
+
+# Get all notes
+curl http://localhost:8000/notes
+
+# Get specific note (replace {id} with actual ID)
+curl http://localhost:8000/notes/{id}
+
+# Update a note
+curl -X PUT http://localhost:8000/notes/{id} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Updated Title"
+  }'
+
+# Delete a note
+curl -X DELETE http://localhost:8000/notes/{id}
+
+
+# Dokcer container commands...
+
+
+
+# Connect to MongoDB container
+docker exec -it mongodb_container mongosh
+
+# Switch to lab3_db
+use test_mongodb
+
+# View all notes
+db.notes.find().pretty()
+
+# Count notes
+db.notes.countDocuments()
+
+# Exit
+exit
