@@ -72,11 +72,11 @@ async def create_todo(title: str):
     if not title:
         REQUEST.labels(method="POST",path="/todos",status=400).inc()
         raise HTTPException(status_code=400,detail="Title cannot be empty")
-        todo={"id": len(todos)+1,"title":title,"completed":False}
-        todos.append(todo)
-        REQUEST.labels(method="POST",path="/todos",status=400).inc()
-        LATENCY.labels(method="POST",path="/todos").observe(time.time()-start_time)
-        return todo
+    todo={"id": len(todos)+1,"title":title,"completed":False}
+    todos.append(todo)
+    REQUEST.labels(method="POST",path="/todos",status=400).inc()
+    LATENCY.labels(method="POST",path="/todos").observe(time.time()-start_time)
+    return todo
 
 
 @app.get("/metrics")
