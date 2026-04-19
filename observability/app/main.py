@@ -36,6 +36,7 @@ async def lifespan(app:FastAPI):
     logger.info("Shutting down FastAPI application.")
 
 
+app=FastAPI(lifespan=lifespan)
 
 ### initialize prometheus instrumentation
 Instrumentator().instrument(app).expose(app)
