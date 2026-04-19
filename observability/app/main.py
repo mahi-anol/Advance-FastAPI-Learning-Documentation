@@ -88,4 +88,5 @@ async def metrics():
 @app.get("/error")
 async def trigger_error():
     logger.error("simulated error endpoint accessed")
+    REQUEST.labels(method="GET",path="/error",status=500).inc()
     raise HTTPException(status_code=500,detail="Simulated error")
